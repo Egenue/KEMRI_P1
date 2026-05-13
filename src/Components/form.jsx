@@ -30,11 +30,6 @@ export default function Form() {
     informationAdequate: ''
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({...prev, [name]: value}));
-  };
-
   const handleCheckboxChange = (section, option) => {
     setFormData(prev => ({
       ...prev,
@@ -53,7 +48,6 @@ export default function Form() {
 
   return (
     <form onSubmit={handleSubmit} className="questionnaire-form">
-
       <div className="form-header">
         <h1>QUESTIONNAIRE FOR THE GIRLS AGED BETWEEN 15-19 YEARS</h1>
         
@@ -125,7 +119,7 @@ export default function Form() {
         <div className="form-group">
           <label>2. Whom do you stay with?</label>
           <div className="radio-group">
-            {['Father and mother', 'Mother only', 'Father only', 'Relative/Guardian'].map(option => (
+            {['Father and mother', 'Mother only', 'Father only', 'Relative'].map(option => (
               <div key={option} className="radio-option">
                 <input 
                   type="radio" 
