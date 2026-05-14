@@ -1,6 +1,7 @@
 export default function InstructionsSection() {
   return (
     <div className="instructions-section">
+      <h1>KEMRI- CGHR: INFLUENZA PROGRAM</h1>
       <h2>INSTRUCTIONS</h2>
       <ul>
         <li>Do not write your name</li>

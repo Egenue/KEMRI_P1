@@ -10,8 +10,12 @@ export default function FormHeader({ formData, handleInputChange }) {
             type="text" 
             name="serialNumber" 
             value={formData.serialNumber}
-            onChange={handleInputChange}
+            readOnly
+            className="serial-number-input"
           />
+          <small style={{ color: '#666', marginTop: '4px', display: 'block' }}>
+            Auto-generated • Unique • Read-only
+          </small>
         </div>
         
         <div className="form-group">

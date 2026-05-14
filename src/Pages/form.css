@@ -1,6 +1,16 @@
-.questionnaire-form {
+.form_data {
+  border: solid #d4e5fa;
   max-width: 900px;
-  margin: 0 auto;
+  margin: 20px auto;
+  padding: 30px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: -10px -5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.questionnaire-form {
+  max-width: 800px;
+  margin: 10px ;
   padding: 30px;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -12,12 +22,15 @@
 /* Header Section */
 .form-header {
   text-align: center;
+  margin-left: 10px ;
+  margin-right: 10px ;
   margin-bottom: 30px;
   border-bottom: 3px solid #2c5282;
   padding-bottom: 20px;
 }
 
 .form-header h1 {
+  text-align: center;
   color: #2c5282;
   font-size: 18px;
   font-weight: bold;
@@ -40,6 +53,8 @@
 
 /* Instructions Section */
 .instructions-section {
+  margin-left: 10px ;
+  margin-right: 10px ;
   background-color: #e6f2ff;
   padding: 20px;
   border-left: 4px solid #2c5282;
@@ -48,24 +63,35 @@
 }
 
 .instructions-section h2 {
+  text-align: center;
   color: #2c5282;
   font-size: 16px;
-  margin-top: 0;
   margin-bottom: 15px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.instructions-section h1 {
+  text-align: center;
+  color: #2c5282;
 }
 
 .instructions-section ul {
   margin: 0;
   padding-left: 20px;
+  justify-content: center;
 }
 
 .instructions-section li {
+  align-items: center;
   margin-bottom: 8px;
   color: #333;
 }
 
 /* Sections */
 section {
+  margin-left: 10px ;
+  margin-right: 10px ;
   margin-bottom: 30px;
 }
 
@@ -81,6 +107,8 @@ section h2 {
 
 /* Form Groups */
 .form-group {
+  margin-left: 10px ;
+  margin-right: 10px ;
   margin-bottom: 20px;
 }
 
@@ -103,6 +131,8 @@ section h2 {
 .form-group input[type="text"],
 .form-group input[type="date"],
 .form-group input[type="number"] {
+  margin-left: 10px ;
+  margin-right: 10px ;
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -115,13 +145,30 @@ section h2 {
 .form-group input[type="text"]:focus,
 .form-group input[type="date"]:focus,
 .form-group input[type="number"]:focus {
+  margin-left: 10px ;
+  margin-right: 10px ;
   outline: none;
   border-color: #2c5282;
   box-shadow: 0 0 5px rgba(44, 82, 130, 0.3);
 }
 
+/* Serial Number Input (Read-only) */
+.serial-number-input {
+  background-color: #e8f0fe !important;
+  color: #2c5282 !important;
+  font-weight: 600 !important;
+  cursor: default !important;
+  border-color: #2c5282 !important;
+}
+
+.serial-number-input:focus {
+  box-shadow: 0 0 8px rgba(44, 82, 130, 0.5) !important;
+}
+
 /* Radio Groups */
 .radio-group {
+  margin-left: 10px ;
+  margin-right: 10px ;
   display: flex;
   flex-direction: column;
   gap: 10px;

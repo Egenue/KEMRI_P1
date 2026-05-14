@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FormHeader from '../Components/FormHeader';
 import InstructionsSection from '../Components/InstructionsSection';
 import DemographicSection from '../Components/DemographicSection';
@@ -7,6 +7,17 @@ import FormActions from '../Components/FormActions';
 import './form.css';
 
 export default function Form() {
+  // Generate unique serial number format: KEMRI-YYYYMMDD-XXXXXX-YYYY
+  const generateSerialNumber = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const timestamp = Date.now().toString().slice(-6);
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return `KEMRI-${year}${month}${day}-${timestamp}-${random}`;
+  };
+
   const initialState = {
     serialNumber: '', schoolName: '', supervisorName: '', dateCollection: '',
     age: '', stayWith: '', guardianOccupation: '', guardianOccupationOther: '',
@@ -21,6 +32,14 @@ export default function Form() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
+
+  // Auto-generate serial number on component mount
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      serialNumber: generateSerialNumber()
+    }));
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -39,8 +58,11 @@ export default function Form() {
 
   const handleClear = () => {
     if (window.confirm('Are you sure you want to clear all fields?')) {
-      setFormData(initialState);
-      setMessage('✅ All fields cleared successfully');
+      setFormData(prev => ({
+        ...initialState,
+        serialNumber: generateSerialNumber()
+      }));
+      setMessage('✅ All fields cleared & new serial number generated');
       setMessageType('success');
       setTimeout(() => setMessage(''), 3000);
     }
@@ -49,8 +71,8 @@ export default function Form() {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     
-    if (!formData.serialNumber || !formData.schoolName) {
-      setMessage('⚠️ Please fill in at least Serial Number and School Name');
+    if (!formData.schoolName) {
+      setMessage('⚠️ Please fill in the School Name');
       setMessageType('warning');
       return;
     }
@@ -82,7 +104,10 @@ export default function Form() {
       if (response.ok) {
         setMessage(`✅ ${data.message} (ID: ${data.id})`);
         setMessageType('success');
-        setTimeout(() => setFormData(initialState), 1500);
+        setTimeout(() => setFormData(prev => ({
+          ...initialState,
+          serialNumber: generateSerialNumber()
+        })), 1500);
       } else {
         setMessage(`❌ ${data.message}`);
         setMessageType('error');
@@ -98,8 +123,7 @@ export default function Form() {
   return (
     <div className="questionnaire-container">
       <InstructionsSection />
-      
-      <form onSubmit={handleSubmit}>
+      <form className="form_data" onSubmit={handleSubmit}>
         <FormHeader 
           formData={formData} 
           handleInputChange={handleInputChange} 
