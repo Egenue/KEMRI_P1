@@ -4,11 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-<<<<<<< HEAD
     "start": "nodemon server.js"
-=======
-    "dev": "nodemon server.js"
->>>>>>> c0802936e3894d77c05b0833e6a5056d038cbd34
   },
   "keywords": [],
   "author": "",
@@ -21,8 +17,4 @@
     "mysql2": "^3.6.5",
     "nodemon": "^3.1.14"
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> c0802936e3894d77c05b0833e6a5056d038cbd34
