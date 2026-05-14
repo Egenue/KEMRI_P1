@@ -1,3 +1,12 @@
+.questionnaire-container {
+  padding: 20px;
+  border-left: 4px solid #2c5282;
+  background-color: #f0f4f8;
+  max-width: 1200px;
+  border-radius: 8px;
+  margin: 2px auto;
+}
+
 .form_data {
   border: solid #d4e5fa;
   max-width: 900px;
@@ -25,7 +34,6 @@
   margin-left: 10px ;
   margin-right: 10px ;
   margin-bottom: 30px;
-  border-bottom: 3px solid #2c5282;
   padding-bottom: 20px;
 }
 
@@ -34,6 +42,7 @@
   color: #2c5282;
   font-size: 18px;
   font-weight: bold;
+  font-family: sans-serif;
   margin-bottom: 20px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -57,7 +66,6 @@
   margin-right: 10px ;
   background-color: #e6f2ff;
   padding: 20px;
-  border-left: 4px solid #2c5282;
   margin-bottom: 30px;
   border-radius: 4px;
 }
@@ -152,7 +160,7 @@ section h2 {
   box-shadow: 0 0 5px rgba(44, 82, 130, 0.3);
 }
 
-/* Serial Number Input (Read-only) */
+/* The Serial Number is auto-generated and read-only */
 .serial-number-input {
   background-color: #e8f0fe !important;
   color: #2c5282 !important;
