@@ -2,7 +2,7 @@ import mysql from 'mysql2';
 import dotenv from 'dotenv';
 
 dotenv.config({
-    path: '../.env'
+    path: './.env'
 });
 
 const db_password = process.env.DB_PASSWORD;

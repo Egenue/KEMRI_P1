@@ -4,6 +4,7 @@ node_modules
 package-lock.json
 ~$data_dictionary.xlsx
 .gitignore
+.env
 
 # Editor directories and files
 .vscode/*
