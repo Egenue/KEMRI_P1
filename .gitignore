@@ -2,6 +2,8 @@ node_modules
 *.local
 .gitignore
 package-lock.json
+~$data_dictionary.xlsx
+.gitignore
 
 # Editor directories and files
 .vscode/*
