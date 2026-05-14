@@ -11,6 +11,8 @@ export default function DemographicSection({ formData, handleInputChange, handle
           name="age" 
           value={formData.age}
           onChange={handleInputChange}
+          min={15}
+          max={19}
         />
       </div>
 
@@ -112,6 +114,7 @@ export default function DemographicSection({ formData, handleInputChange, handle
           name="familySize" 
           value={formData.familySize}
           onChange={handleInputChange}
+          min={1}
         />
       </div>
 
