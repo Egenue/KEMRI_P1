@@ -7,10 +7,11 @@ dotenv.config({ path: './.env' });
 const app = express();
 
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN || `http://localhost:${process.env.PORT}`,
+    origin: ['http://localhost:5000', 'https://kemri-p1.vercel.app/', '*'], // Add your frontend URLs here
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type']  
-  };
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+};
 
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -22,5 +23,5 @@ app.get('/api/questionnaire/:id', QuestionnaireController.getOneForm);
 app.put('/api/questionnaire/:id', QuestionnaireController.updateForm);
 app.delete('/api/questionnaire/:id', QuestionnaireController.deleteForm);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT ;
 app.listen(PORT, () => console.log(`🚀 Server on port ${PORT}`));

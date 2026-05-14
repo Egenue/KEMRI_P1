@@ -5,7 +5,7 @@ package-lock.json
 .gitignore
 .env
 database_schema.dsn
-
+Backend\.env
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

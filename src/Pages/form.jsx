@@ -7,10 +7,9 @@ import FormActions from '../Components/FormActions';
 import './form.css';
 
 export default function Form() {
-
-  const API_URL = import.meta.env.VITE_API_URL;
+  // Use Vite environment variable with a local fallback to avoid "undefined" URL
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/questionnaire';
   
-  // Generate unique serial number format: KEMRI-YYYYMMDD-XXXXXX-YYYY
   const generateSerialNumber = () => {
     const date = new Date();
     const year = date.getFullYear();
@@ -23,9 +22,10 @@ export default function Form() {
 
   const initialState = {
     questionnaire_sno: '', school_name: '', supervisor_fname: '', collection_date: '', age: '', stay_with: '',
-    guardian_occupation: '', other_guardian_occupation: '', guardian_education: '', religion: '', family_size: '',
-    older_siblings: '', siblings_have_relationships: '', pocket_money: '', pocket_money_adequate: '', financial_support: {},
-    guardian_visits: '', other_visitors:{} , access_rh_info: '', rh_info_source: {}, topics_covered: {}, info_adequate: ''
+    guardian_occupation: '', guardian_occupation_other: '', guardian_education: '', religion: '', family_size: '',
+    older_siblings: '', siblings_have_relationships: '', pocket_money: '', pocket_money_adequate: '', 
+    financial_support: {}, guardian_visits: '', other_visitors: {}, 
+    access_rh_info: '', rh_info_source: {}, topics_covered: {}, info_adequate: ''
   };
 
   const [formData, setFormData] = useState(initialState);
@@ -33,7 +33,6 @@ export default function Form() {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
-  // Auto-generate serial number on component mount
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
@@ -50,19 +49,19 @@ export default function Form() {
     setFormData(prev => ({
       ...prev,
       [section]: {
-        ...prev[section],
-        [option]: !prev[section][option]
+        ...(prev[section] || {}), // Safety: spread existing or empty object
+        [option]: !prev[section]?.[option] // Toggle value safely
       }
     }));
   };
 
   const handleClear = () => {
     if (window.confirm('Are you sure you want to clear all fields?')) {
-      setFormData(prev => ({
+      setFormData({
         ...initialState,
         questionnaire_sno: generateSerialNumber()
-      }));
-      setMessage('✅ All fields cleared & new serial number generated');
+      });
+      setMessage('✅ All fields cleared');
       setMessageType('success');
       setTimeout(() => setMessage(''), 3000);
     }
@@ -71,7 +70,6 @@ export default function Form() {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     
-    // Basic Validation
     if (!formData.school_name || !formData.age) {
       setMessage('⚠️ Please fill in all required fields (School Name and Age)');
       setMessageType('warning');
@@ -81,16 +79,13 @@ export default function Form() {
     setLoading(true);
     setMessage('');
 
-    // Helper to turn { Relatives: true, Boyfriend: false } into "Relatives"
     const stringifyCheckboxes = (obj) => {
       if (!obj) return '';
       return Object.keys(obj).filter(key => obj[key]).join(', ');
     };
 
-    // Prepare the data for the MySQL backend
     const payload = {
       ...formData,
-      // Ensure these keys match what your MySQL Model expects
       financial_support: stringifyCheckboxes(formData.financial_support),
       other_visitors: stringifyCheckboxes(formData.other_visitors),
       rh_info_source: stringifyCheckboxes(formData.rh_info_source),
@@ -98,7 +93,6 @@ export default function Form() {
     };
 
     try {
-      // FIX: Use API_URL (the variable you defined at the top)
       const response = await fetch(API_URL, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -108,26 +102,18 @@ export default function Form() {
       const data = await response.json();
 
       if (response.ok) {
-        // Your backend returns { success: true, questionnaire_id: ... }
-        setMessage(`✅ Success! Data saved with ID: ${data.questionnaire_id || data.id}`);
+        setMessage(`✅ Success! Data saved ID: ${data.id}`);
         setMessageType('success');
-
-        // Reset the form after 2 seconds
         setTimeout(() => {
-          setFormData({
-            ...initialState,
-            questionnaire_sno: generateSerialNumber()
-          });
+          setFormData({ ...initialState, questionnaire_sno: generateSerialNumber() });
           setMessage('');
         }, 2000);
-
       } else {
-        setMessage(`❌ Error: ${data.message || 'Server rejected the data'}`);
+        setMessage(`❌ Error: ${data.message}`);
         setMessageType('error');
       }
     } catch (error) {
-      console.error("Submit Error:", error);
-      setMessage(`❌ Network Error. Is the backend server running at ${API_URL}?`);
+      setMessage(`❌ Network Error. Is the backend running?`);
       setMessageType('error');
     } finally {
       setLoading(false);
@@ -138,23 +124,17 @@ export default function Form() {
     <div className="questionnaire-container">
       <InstructionsSection />
       <form className="form_data" onSubmit={handleSubmit}>
-        <FormHeader 
-          formData={formData} 
-          handleInputChange={handleInputChange} 
-        />
-        
+        <FormHeader formData={formData} handleInputChange={handleInputChange} />
         <DemographicSection 
           formData={formData} 
           handleInputChange={handleInputChange} 
           handleCheckboxChange={handleCheckboxChange}
         />
-        
         <InformationSection 
           formData={formData} 
           handleInputChange={handleInputChange} 
           handleCheckboxChange={handleCheckboxChange}
         />
-
         <FormActions 
           loading={loading}
           message={message}
