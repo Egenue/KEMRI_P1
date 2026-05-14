@@ -7,6 +7,9 @@ import FormActions from '../Components/FormActions';
 import './form.css';
 
 export default function Form() {
+
+  const API_URL = import.meta.env.VITE_API_URL;
+  
   // Generate unique serial number format: KEMRI-YYYYMMDD-XXXXXX-YYYY
   const generateSerialNumber = () => {
     const date = new Date();
@@ -68,8 +71,9 @@ export default function Form() {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     
-    if (!formData.school_name) {
-      setMessage('⚠️ Please fill in the School Name');
+    // Basic Validation
+    if (!formData.school_name || !formData.age) {
+      setMessage('⚠️ Please fill in all required fields (School Name and Age)');
       setMessageType('warning');
       return;
     }
@@ -77,12 +81,16 @@ export default function Form() {
     setLoading(true);
     setMessage('');
 
-    // Convert checkbox objects { item: true } into "item1, item2" strings for MySQL
-    const stringifyCheckboxes = (obj) => 
-      Object.keys(obj).filter(key => obj[key]).join(', ');
+    // Helper to turn { Relatives: true, Boyfriend: false } into "Relatives"
+    const stringifyCheckboxes = (obj) => {
+      if (!obj) return '';
+      return Object.keys(obj).filter(key => obj[key]).join(', ');
+    };
 
+    // Prepare the data for the MySQL backend
     const payload = {
       ...formData,
+      // Ensure these keys match what your MySQL Model expects
       financial_support: stringifyCheckboxes(formData.financial_support),
       other_visitors: stringifyCheckboxes(formData.other_visitors),
       rh_info_source: stringifyCheckboxes(formData.rh_info_source),
@@ -90,10 +98,8 @@ export default function Form() {
     };
 
     try {
-
-      /* Change url before deployment */
-
-      const response = await fetch('http://localhost:5000/api/questionnaire', { 
+      // FIX: Use API_URL (the variable you defined at the top)
+      const response = await fetch(API_URL, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -102,18 +108,26 @@ export default function Form() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(`✅ ${data.message} (ID: ${data.id})`);
+        // Your backend returns { success: true, questionnaire_id: ... }
+        setMessage(`✅ Success! Data saved with ID: ${data.questionnaire_id || data.id}`);
         setMessageType('success');
-        setTimeout(() => setFormData(prev => ({
-          ...initialState,
-          questionnaire_sno: generateSerialNumber()
-        })), 1500);
+
+        // Reset the form after 2 seconds
+        setTimeout(() => {
+          setFormData({
+            ...initialState,
+            questionnaire_sno: generateSerialNumber()
+          });
+          setMessage('');
+        }, 2000);
+
       } else {
-        setMessage(`❌ ${data.message}`);
+        setMessage(`❌ Error: ${data.message || 'Server rejected the data'}`);
         setMessageType('error');
       }
     } catch (error) {
-      setMessage(`❌ Connection Error. Is the backend running?`);
+      console.error("Submit Error:", error);
+      setMessage(`❌ Network Error. Is the backend server running at ${API_URL}?`);
       setMessageType('error');
     } finally {
       setLoading(false);

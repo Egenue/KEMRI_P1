@@ -33,6 +33,7 @@ export default function InformationSection({ formData, handleInputChange, handle
                 <input 
                   type="checkbox" 
                   id={`sources-${option}`}
+                  value={option}
                   checked={formData.rh_info_source[option] || false}
                   onChange={() => handleCheckboxChange('rh_info_source', option)}
                 />
@@ -53,6 +54,7 @@ export default function InformationSection({ formData, handleInputChange, handle
                 <input 
                   type="checkbox" 
                   id={`topics-${option}`}
+                  value={option}
                   checked={formData.topics_covered[option] || false}
                   onChange={() => handleCheckboxChange('topics_covered', option)}
                 />

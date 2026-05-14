@@ -59,7 +59,7 @@ export default function DemographicSection({ formData, handleInputChange, handle
           <input 
             type="text" 
             name="guardian_occupation_other" 
-            value={formData.guardian_occupation_other}
+            value={formData.guardian_occupation_other || ''}
             onChange={handleInputChange}
             placeholder="Please specify if other"
           />
@@ -209,7 +209,8 @@ export default function DemographicSection({ formData, handleInputChange, handle
               <input 
                 type="checkbox" 
                 id={`financial-${option}`}
-                checked={formData.financial_support[option] || false}
+                value = {option || ''}
+                checked={formData.financial_support[option]}
                 onChange={() => handleCheckboxChange('financial_support', option)}
               />
               <label htmlFor={`financial-${option}`}>{option}</label>
@@ -246,7 +247,8 @@ export default function DemographicSection({ formData, handleInputChange, handle
                   <input 
                     type="checkbox" 
                     id={`visitors-${option}`}
-                    checked={formData.other_visitors[option] || false}
+                    value={option || ''}
+                    checked={formData.other_visitors[option]}
                     onChange={() => handleCheckboxChange('other_visitors', option)}
                   />
                   <label htmlFor={`visitors-${option}`}>{option}</label>

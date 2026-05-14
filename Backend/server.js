@@ -6,7 +6,13 @@ import * as QuestionnaireController from './Controllers/questionnaireController.
 dotenv.config({ path: './.env' });
 const app = express();
 
-app.use(cors());
+app.use(cors(
+  corsOptions = {
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000' || '',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type']
+  }
+));
 app.use(express.json());
 
 // Routes
