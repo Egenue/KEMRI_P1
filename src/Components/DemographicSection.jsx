@@ -209,8 +209,8 @@ export default function DemographicSection({ formData, handleInputChange, handle
               <input 
                 type="checkbox" 
                 id={`financial-${option}`}
-                value = {option}
-                checked={formData.financialsupport[option]}
+                value={option || false}
+                checked={formData.financialsupport[option] || false}
                 onChange={() => handleCheckboxChange('financialsupport', option)}
               />
               <label htmlFor={`financial-${option}`}>{option}</label>
@@ -247,8 +247,8 @@ export default function DemographicSection({ formData, handleInputChange, handle
                   <input 
                     type="checkbox" 
                     id={`visitors-${option}`}
-                    value={option || ''}
-                    checked={formData.othervisitors[option]}
+                    value={option}
+                    checked={formData.othervisitors[option] || false}
                     onChange={() => handleCheckboxChange('othervisitors', option)}
                   />
                   <label htmlFor={`visitors-${option}`}>{option}</label>

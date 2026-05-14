@@ -12,9 +12,9 @@ export default function InformationSection({ formData, handleInputChange, handle
               <input 
                 type="radio" 
                 id={`healthaccess-${option}`} 
-                name="access_rh_info" 
+                name="accessrhinfo" 
                 value={option}
-                checked={formData.access_rh_info === option}
+                checked={formData.accessrhinfo === option}
                 onChange={handleInputChange}
               />
               <label htmlFor={`healthaccess-${option}`}>{option}</label>
@@ -24,7 +24,7 @@ export default function InformationSection({ formData, handleInputChange, handle
       </div>
 
       {/* Q15 */}
-      {formData.access_rh_info === 'Yes' && (
+      {formData.accessrhinfo === 'Yes' && (
         <div className="form-group">
           <label>15. If yes, who mostly educates you on reproductive health issues? (Select all that apply)</label>
           <div className="checkbox-group">
@@ -34,8 +34,8 @@ export default function InformationSection({ formData, handleInputChange, handle
                   type="checkbox" 
                   id={`sources-${option}`}
                   value={option}
-                  checked={formData.rh_info_source[option] || false}
-                  onChange={() => handleCheckboxChange('rh_info_source', option)}
+                  checked={formData.rhinfosource[option] || false}
+                  onChange={() => handleCheckboxChange('rhinfosource', option)}
                 />
                 <label htmlFor={`sources-${option}`}>{option}</label>
               </div>
@@ -45,7 +45,7 @@ export default function InformationSection({ formData, handleInputChange, handle
       )}
 
       {/* Q16 */}
-      {formData.access_rh_info === 'Yes' && (
+      {formData.accessrhinfo === 'Yes' && (
         <div className="form-group">
           <label>16. Which topics do they normally cover? (Select all that apply)</label>
           <div className="checkbox-group">
@@ -55,8 +55,8 @@ export default function InformationSection({ formData, handleInputChange, handle
                   type="checkbox" 
                   id={`topics-${option}`}
                   value={option}
-                  checked={formData.topics_covered[option] || false}
-                  onChange={() => handleCheckboxChange('topics_covered', option)}
+                  checked={formData.topicscovered[option] || false}
+                  onChange={() => handleCheckboxChange('topicscovered', option)}
                 />
                 <label htmlFor={`topics-${option}`}>{option}</label>
               </div>
@@ -66,7 +66,7 @@ export default function InformationSection({ formData, handleInputChange, handle
       )}
 
       {/* Q17 */}
-      {formData.access_rh_info === 'Yes' && (
+      {formData.accessrhinfo === 'Yes' && (
         <div className="form-group">
           <label>17. Is the information adequate?</label>
           <div className="radio-group">
@@ -75,9 +75,9 @@ export default function InformationSection({ formData, handleInputChange, handle
                 <input 
                   type="radio" 
                   id={`infoadequate-${option}`} 
-                  name="info_adequate" 
+                  name="infoadequate" 
                   value={option}
-                  checked={formData.info_adequate === option}
+                  checked={formData.infoadequate === option}
                   onChange={handleInputChange}
                 />
                 <label htmlFor={`infoadequate-${option}`}>{option}</label>

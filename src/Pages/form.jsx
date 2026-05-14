@@ -8,7 +8,7 @@ import './form.css';
 
 export default function Form() {
   // Use Vite environment variable with a local fallback to avoid "undefined" URL
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/questionnaire';
+  const API_URL = import.meta.env.VITE_API_URL;
   
   const generateSerialNumber = () => {
     const date = new Date();
@@ -103,10 +103,10 @@ export default function Form() {
 
     const payload = {
       ...formData,
-      financialsupport: stringifyCheckboxes(formData.financial_support),
-      othervisitors: stringifyCheckboxes(formData.other_visitors),
-      rhinfosource: stringifyCheckboxes(formData.rh_info_source),
-      topicscovered: stringifyCheckboxes(formData.topics_covered)
+      financialsupport: stringifyCheckboxes(formData.financialsupport),
+      othervisitors: stringifyCheckboxes(formData.othervisitors),
+      rhinfosource: stringifyCheckboxes(formData.rhinfosource),
+      topicscovered: stringifyCheckboxes(formData.topicscovered)
     };
 
     try {
