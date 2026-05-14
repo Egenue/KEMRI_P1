@@ -8,7 +8,7 @@ import './form.css';
 
 export default function Form() {
   // Use Vite environment variable with a local fallback to avoid "undefined" URL
-  const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = "https://kemri-p1.onrender.com/api/questionnaire";
   
   const generateSerialNumber = () => {
     const date = new Date();
