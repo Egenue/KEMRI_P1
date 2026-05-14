@@ -8,7 +8,7 @@ const app = express();
 
 app.use(cors(
   corsOptions = {
-    origin: process.env.CORS_ORIGIN || `http://localhost:${process.env.PORT}` || '',
+    origin: process.env.CORS_ORIGIN || `http://localhost:${process.env.PORT}`,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type']  
   }
