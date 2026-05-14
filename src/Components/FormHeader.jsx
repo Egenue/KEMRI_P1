@@ -8,8 +8,8 @@ export default function FormHeader({ formData, handleInputChange }) {
           <label>Questionnaire serial number: </label>
           <input 
             type="text" 
-            name="serialNumber" 
-            value={formData.serialNumber}
+            name="questionnaire_sno" 
+            value={formData.questionnaire_sno}
             readOnly
             className="serial-number-input"
           />
@@ -22,8 +22,8 @@ export default function FormHeader({ formData, handleInputChange }) {
           <label>Name of the school: </label>
           <input 
             type="text" 
-            name="schoolName" 
-            value={formData.schoolName}
+            name="school_name" 
+            value={formData.school_name}
             onChange={handleInputChange}
           />
         </div>
@@ -32,8 +32,8 @@ export default function FormHeader({ formData, handleInputChange }) {
           <label>Supervisor's name: </label>
           <input 
             type="text" 
-            name="supervisorName" 
-            value={formData.supervisorName}
+            name="supervisor_fname" 
+            value={formData.supervisor_fname}
             onChange={handleInputChange}
           />
         </div>
@@ -42,8 +42,8 @@ export default function FormHeader({ formData, handleInputChange }) {
           <label>Date of data collection: </label>
           <input 
             type="date" 
-            name="dateCollection" 
-            value={formData.dateCollection}
+            name="collection_date" 
+            value={formData.collection_date}
             onChange={handleInputChange}
           />
         </div>
