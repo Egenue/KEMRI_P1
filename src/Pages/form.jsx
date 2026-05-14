@@ -19,13 +19,10 @@ export default function Form() {
   };
 
   const initialState = {
-    serialNumber: '', schoolName: '', supervisorName: '', dateCollection: '',
-    age: '', stayWith: '', guardianOccupation: '', guardianOccupationOther: '',
-    guardianEducation: '', religion: '', ethnicity: '', familySize: '',
-    olderSiblings: '', siblingsPartnered: '', parentsPocketMoney: '',
-    pocketMoneyAdequate: '', financialNeeds: {}, guardianVisits: '',
-    otherVisitors: {}, reproductiveHealthAccess: '', healthInfoSources: {},
-    topicsCovered: {}, informationAdequate: ''
+    questionnaire_sno: '', school_name: '', supervisor_fname: '', collection_date: '', age: '', stay_with: '',
+    guardian_occupation: '', other_guardian_occupation: '', guardian_education: '', religion: '', family_size: '',
+    older_siblings: '', siblings_have_relationships: '', pocket_money: '', pocket_money_adequate: '', financial_support: {},
+    guardian_visits: '', other_visitors:{} , access_rh_info: '', rh_info_source: {}, topics_covered: {}, info_adequate: ''
   };
 
   const [formData, setFormData] = useState(initialState);
@@ -37,7 +34,7 @@ export default function Form() {
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
-      serialNumber: generateSerialNumber()
+      questionnaire_sno: generateSerialNumber()
     }));
   }, []);
 
@@ -60,7 +57,7 @@ export default function Form() {
     if (window.confirm('Are you sure you want to clear all fields?')) {
       setFormData(prev => ({
         ...initialState,
-        serialNumber: generateSerialNumber()
+        questionnaire_sno: generateSerialNumber()
       }));
       setMessage('✅ All fields cleared & new serial number generated');
       setMessageType('success');
@@ -71,7 +68,7 @@ export default function Form() {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     
-    if (!formData.schoolName) {
+    if (!formData.school_name) {
       setMessage('⚠️ Please fill in the School Name');
       setMessageType('warning');
       return;
@@ -86,14 +83,17 @@ export default function Form() {
 
     const payload = {
       ...formData,
-      financialNeeds: stringifyCheckboxes(formData.financialNeeds),
-      otherVisitors: stringifyCheckboxes(formData.otherVisitors),
-      healthInfoSources: stringifyCheckboxes(formData.healthInfoSources),
-      topicsCovered: stringifyCheckboxes(formData.topicsCovered)
+      financial_support: stringifyCheckboxes(formData.financial_support),
+      other_visitors: stringifyCheckboxes(formData.other_visitors),
+      rh_info_source: stringifyCheckboxes(formData.rh_info_source),
+      topics_covered: stringifyCheckboxes(formData.topics_covered)
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/questionnaire', {
+
+      /* Change url before deployment */
+
+      const response = await fetch('http://localhost:5000/api/questionnaire', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -106,7 +106,7 @@ export default function Form() {
         setMessageType('success');
         setTimeout(() => setFormData(prev => ({
           ...initialState,
-          serialNumber: generateSerialNumber()
+          questionnaire_sno: generateSerialNumber()
         })), 1500);
       } else {
         setMessage(`❌ ${data.message}`);
