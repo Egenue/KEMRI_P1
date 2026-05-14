@@ -2,7 +2,7 @@ import Questionnaire from '../Models/questionnaireModel.js';
 
 export const submitForm = (req, res) => {
     // 1. Validate required custom ID
-    if (!req.body.questionnaire_sno) {
+    if (!req.body.questionnairesno) {
         return res.status(400).json({ success: false, message: 'Questionnaire Serial Number (sno) is required' });
     }
 

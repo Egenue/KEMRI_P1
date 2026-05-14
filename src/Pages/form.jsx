@@ -21,12 +21,29 @@ export default function Form() {
   };
 
   const initialState = {
-    questionnaire_sno: '', school_name: '', supervisor_fname: '', collection_date: '', age: '', stay_with: '',
-    guardian_occupation: '', guardian_occupation_other: '', guardian_education: '', religion: '', family_size: '',
-    older_siblings: '', siblings_have_relationships: '', pocket_money: '', pocket_money_adequate: '', 
-    financial_support: {}, guardian_visits: '', other_visitors: {}, 
-    access_rh_info: '', rh_info_source: {}, topics_covered: {}, info_adequate: ''
-  };
+  questionnairesno: '', 
+  schoolname: '', 
+  supervisorfname: '', 
+  collectiondate: '', 
+  age: '', 
+  staywith: '',
+  guardianoccupation: '', 
+  otherguardianoccupation: '', 
+  guardianeducation: '', 
+  religion: '', 
+  familysize: '',
+  oldersiblings: '', 
+  siblingshaverelationships: '', 
+  pocketmoney: '', 
+  pocketmoneyadequate: '', 
+  financialsupport: {}, 
+  guardianvisits: '', 
+  othervisitors: {}, 
+  accessrhinfo: '', 
+  rhinfosource: {}, 
+  topicscovered: {}, 
+  infoadequate: ''
+};
 
   const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
@@ -36,7 +53,7 @@ export default function Form() {
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
-      questionnaire_sno: generateSerialNumber()
+      questionnairesno: generateSerialNumber()
     }));
   }, []);
 
@@ -59,7 +76,7 @@ export default function Form() {
     if (window.confirm('Are you sure you want to clear all fields?')) {
       setFormData({
         ...initialState,
-        questionnaire_sno: generateSerialNumber()
+        questionnairesno: generateSerialNumber()
       });
       setMessage('✅ All fields cleared');
       setMessageType('success');
@@ -70,7 +87,7 @@ export default function Form() {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     
-    if (!formData.school_name || !formData.age) {
+    if (!formData.schoolname || !formData.age) {
       setMessage('⚠️ Please fill in all required fields (School Name and Age)');
       setMessageType('warning');
       return;
@@ -86,10 +103,10 @@ export default function Form() {
 
     const payload = {
       ...formData,
-      financial_support: stringifyCheckboxes(formData.financial_support),
-      other_visitors: stringifyCheckboxes(formData.other_visitors),
-      rh_info_source: stringifyCheckboxes(formData.rh_info_source),
-      topics_covered: stringifyCheckboxes(formData.topics_covered)
+      financialsupport: stringifyCheckboxes(formData.financial_support),
+      othervisitors: stringifyCheckboxes(formData.other_visitors),
+      rhinfosource: stringifyCheckboxes(formData.rh_info_source),
+      topicscovered: stringifyCheckboxes(formData.topics_covered)
     };
 
     try {
@@ -105,7 +122,7 @@ export default function Form() {
         setMessage(`✅ Success! Data saved ID: ${data.id}`);
         setMessageType('success');
         setTimeout(() => {
-          setFormData({ ...initialState, questionnaire_sno: generateSerialNumber() });
+          setFormData({ ...initialState, questionnairesno: generateSerialNumber() });
           setMessage('');
         }, 2000);
       } else {

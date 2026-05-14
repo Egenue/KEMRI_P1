@@ -25,9 +25,9 @@ export default function DemographicSection({ formData, handleInputChange, handle
               <input 
                 type="radio" 
                 id={option} 
-                name="stay_with" 
+                name="staywith" 
                 value={option}
-                checked={formData.stay_with === option}
+                checked={formData.staywith === option}
                 onChange={handleInputChange}
               />
               <label htmlFor={option}>{option}</label>
@@ -45,9 +45,9 @@ export default function DemographicSection({ formData, handleInputChange, handle
               <input 
                 type="radio" 
                 id={`occupation-${option}`} 
-                name="guardian_occupation" 
+                name="guardianoccupation" 
                 value={option}
-                checked={formData.guardian_occupation === option}
+                checked={formData.guardianoccupation === option}
                 onChange={handleInputChange}
               />
               <label htmlFor={`occupation-${option}`}>{option}</label>
@@ -56,10 +56,10 @@ export default function DemographicSection({ formData, handleInputChange, handle
         </div>
         <div className="form-group nested">
           <label>Other (please specify): </label>
-          <input 
-            type="text" 
-            name="guardian_occupation_other" 
-            value={formData.guardian_occupation_other || ''}
+          <input
+            type="text"
+            name="guardianoccupationother" 
+            value={formData.guardianoccupationother || ''}
             onChange={handleInputChange}
             placeholder="Please specify if other"
           />
@@ -75,9 +75,9 @@ export default function DemographicSection({ formData, handleInputChange, handle
               <input 
                 type="radio" 
                 id={`education-${option}`} 
-                name="guardian_education" 
+                name="guardianeducation" 
                 value={option}
-                checked={formData.guardian_education === option}
+                checked={formData.guardianeducation === option}
                 onChange={handleInputChange}
               />
               <label htmlFor={`education-${option}`}>{option}</label>
@@ -111,8 +111,8 @@ export default function DemographicSection({ formData, handleInputChange, handle
         <label>8. How many are you in the family? </label>
         <input 
           type="number" 
-          name="family_size" 
-          value={formData.family_size}
+          name="familysize" 
+          value={formData.familysize}
           onChange={handleInputChange}
           min={1}
         />
@@ -127,9 +127,9 @@ export default function DemographicSection({ formData, handleInputChange, handle
               <input 
                 type="radio" 
                 id={`siblings-${option}`} 
-                name="older_siblings" 
+                name="oldersiblings" 
                 value={option}
-                checked={formData.older_siblings === option}
+                checked={formData.oldersiblings === option}
                 onChange={handleInputChange}
               />
               <label htmlFor={`siblings-${option}`}>{option}</label>
@@ -137,7 +137,7 @@ export default function DemographicSection({ formData, handleInputChange, handle
           ))}
         </div>
         
-        {formData.older_siblings === 'Yes' && (
+        {formData.oldersiblings === 'Yes' && (
           <div className="form-group nested">
             <label>(b) If yes, do they have girlfriends/boyfriends?</label>
             <div className="radio-group">
@@ -146,9 +146,9 @@ export default function DemographicSection({ formData, handleInputChange, handle
                   <input 
                     type="radio" 
                     id={`siblingsPartnered-${option}`} 
-                    name="siblings_have_relationships" 
+                    name="siblingshaverelationships" 
                     value={option}
-                    checked={formData.siblings_have_relationships === option}
+                    checked={formData.siblingshaverelationships === option}
                     onChange={handleInputChange}
                   />
                   <label htmlFor={`siblingsPartnered-${option}`}>{option}</label>
@@ -168,9 +168,9 @@ export default function DemographicSection({ formData, handleInputChange, handle
               <input 
                 type="radio" 
                 id={`pocketmoney-${option}`} 
-                name="pocket_money" 
+                name="pocketmoney" 
                 value={option}
-                checked={formData.pocket_money === option}
+                checked={formData.pocketmoney === option}
                 onChange={handleInputChange}
               />
               <label htmlFor={`pocketmoney-${option}`}>{option}</label>
@@ -178,7 +178,7 @@ export default function DemographicSection({ formData, handleInputChange, handle
           ))}
         </div>
         
-        {formData.pocket_money === 'Yes' && (
+        {formData.pocketmoney === 'Yes' && (
           <div className="form-group nested">
             <label>(b) If yes, is it adequate?</label>
             <div className="radio-group">
@@ -187,9 +187,9 @@ export default function DemographicSection({ formData, handleInputChange, handle
                   <input 
                     type="radio" 
                     id={`pocketmoneyAdequate-${option}`} 
-                    name="pocket_money_adequate" 
+                    name="pocketmoneyadequate" 
                     value={option}
-                    checked={formData.pocket_money_adequate === option}
+                    checked={formData.pocketmoneyadequate === option}
                     onChange={handleInputChange}
                   />
                   <label htmlFor={`pocketmoneyAdequate-${option}`}>{option}</label>
@@ -209,9 +209,9 @@ export default function DemographicSection({ formData, handleInputChange, handle
               <input 
                 type="checkbox" 
                 id={`financial-${option}`}
-                value = {option || ''}
-                checked={formData.financial_support[option]}
-                onChange={() => handleCheckboxChange('financial_support', option)}
+                value = {option}
+                checked={formData.financialsupport[option]}
+                onChange={() => handleCheckboxChange('financialsupport', option)}
               />
               <label htmlFor={`financial-${option}`}>{option}</label>
             </div>
@@ -228,9 +228,9 @@ export default function DemographicSection({ formData, handleInputChange, handle
               <input 
                 type="radio" 
                 id={`guardianvisits-${option}`} 
-                name="guardian_visits" 
+                name="guardianvisits" 
                 value={option}
-                checked={formData.guardian_visits === option}
+                checked={formData.guardianvisits === option}
                 onChange={handleInputChange}
               />
               <label htmlFor={`guardianvisits-${option}`}>{option}</label>
@@ -238,7 +238,7 @@ export default function DemographicSection({ formData, handleInputChange, handle
           ))}
         </div>
 
-        {formData.guardian_visits === 'No' && (
+        {formData.guardianvisits === 'No' && (
           <div className="form-group nested">
             <label>13. If no, who else visits you in school? (Select all that apply)</label>
             <div className="checkbox-group">
@@ -248,8 +248,8 @@ export default function DemographicSection({ formData, handleInputChange, handle
                     type="checkbox" 
                     id={`visitors-${option}`}
                     value={option || ''}
-                    checked={formData.other_visitors[option]}
-                    onChange={() => handleCheckboxChange('other_visitors', option)}
+                    checked={formData.othervisitors[option]}
+                    onChange={() => handleCheckboxChange('othervisitors', option)}
                   />
                   <label htmlFor={`visitors-${option}`}>{option}</label>
                 </div>

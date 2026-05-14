@@ -1,9 +1,5 @@
--- Create questionnaires table
--- Run this SQL in your Railway database to set up the table
-
 CREATE TABLE IF NOT EXISTS questionnaires (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    serialNumber VARCHAR(100),
+    serialNumber VARCHAR(100) PRIMARY KEY,
     schoolName VARCHAR(255),
     supervisorName VARCHAR(255),
     dateCollection DATE,
