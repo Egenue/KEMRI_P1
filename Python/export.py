@@ -9,6 +9,7 @@ import time
 import atexit
 from flask import Flask
 from threading import Thread
+from flask import send_file
 
 dotenv.load_dotenv()
 
@@ -87,16 +88,16 @@ def start_scheduler():
     scheduler.add_job(
         func=scheduled_export,
         trigger="cron",
-        hour=2,
-        minute=0,
+        hour=14,
+        minute=50,
         id='daily_export',
         name='Daily Questionnaire Export',
         replace_existing=True
     )
     
     scheduler.start()
-    print(f"✓ Scheduler started. Export will run daily at 02:00 UTC")
-    print(f"✓ Current time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Scheduler started. Export will run daily at 02:00 UTC")
+    print(f"Current time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     atexit.register(lambda: scheduler.shutdown())
     
@@ -115,6 +116,13 @@ def start_web_server():
         """Manual endpoint to trigger export."""
         export_questionnaire_data()
         return {'status': 'export completed'}, 200
+
+    @app.route('/download', methods=['GET'])
+    def download():
+        """Download the exported Excel file."""
+        if os.path.exists(EXPORT_FILE):
+            return send_file(EXPORT_FILE, as_attachment=True)
+        return {'error': 'Export file not found'}, 404
     
     port = int(os.getenv('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
@@ -127,11 +135,11 @@ if __name__ == "__main__":
     
     web_thread = Thread(target=start_web_server, daemon=True)
     web_thread.start()
-    print("✓ Web server started")
+    print("Web server started")
     
     try:
         while True:
             time.sleep(600) 
     except KeyboardInterrupt:
-        print("\n✓ Scheduler stopped by user")
+        print("\nScheduler stopped by user")
         scheduler.shutdown()
