@@ -88,7 +88,7 @@ def start_scheduler():
     scheduler.add_job(
         func=scheduled_export,
         trigger="cron",
-        hour=1,
+        hour=12,
         minute=50,
         id='daily_export',
         name='Daily Questionnaire Export',
@@ -96,7 +96,7 @@ def start_scheduler():
     )
     
     scheduler.start()
-    print(f"Scheduler started. Export will run daily at 03:30 UTC")
+    print(f"Scheduler started. Export will run daily at 12:50 UTC")
     print(f"Current time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     atexit.register(lambda: scheduler.shutdown())
