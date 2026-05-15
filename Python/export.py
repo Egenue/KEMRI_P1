@@ -88,8 +88,8 @@ def start_scheduler():
     scheduler.add_job(
         func=scheduled_export,
         trigger="cron",
-        hour=3,
-        minute=30,
+        hour=1,
+        minute=50,
         id='daily_export',
         name='Daily Questionnaire Export',
         replace_existing=True
