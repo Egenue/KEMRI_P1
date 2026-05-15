@@ -1,34 +1,33 @@
--- Create questionnaires table
--- Run this SQL in your Railway database to set up the table
-
-CREATE TABLE IF NOT EXISTS questionnaires (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    serialNumber VARCHAR(100),
-    schoolName VARCHAR(255),
-    supervisorName VARCHAR(255),
-    dateCollection DATE,
-    age INT,
-    stayWith VARCHAR(100),
-    guardianOccupation VARCHAR(100),
-    guardianEducation VARCHAR(100),
+CREATE TABLE IF NOT EXISTS responses (
+    questionnairesno VARCHAR(100) PRIMARY KEY,
+    schoolname VARCHAR(255) NOT NULL,
+    supervisorfname VARCHAR(255),
+    collectiondate DATE,
+    age INT NOT NULL,
+    staywith VARCHAR(100),
+    guardianoccupation VARCHAR(100),
+    otherguardianoccupation VARCHAR(255),
+    guardianeducation VARCHAR(100),
     religion VARCHAR(100),
-    familySize INT,
-    olderSiblings VARCHAR(10),
-    siblingsPartnered VARCHAR(10),
-    parentsPocketMoney VARCHAR(10),
-    pocketMoneyAdequate VARCHAR(10),
-    guardianVisits VARCHAR(10),
-    reproductiveHealthAccess VARCHAR(10),
-    informationAdequate VARCHAR(10),
-    formDataJson LONGTEXT,
+    familysize INT,
+    oldersiblings BOOLEAN,
+    siblingshaverelationships BOOLEAN,
+    pocketmoney BOOLEAN,
+    pocketmoneyadequate BOOLEAN,
+    financialsupport TEXT,
+    guardianvisits BOOLEAN,
+    othervisitors TEXT,
+    accessrhinfo BOOLEAN,
+    rhinfosource TEXT,
+    topicscovered TEXT,
+    infoadequate BOOLEAN,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_date (dateCollection),
-    INDEX idx_school (schoolName)
+    INDEX idx_collectiondate (collectiondate),
+    INDEX idx_schoolname (schoolname)
 );
 
--- Insert sample questionnaire (optional)
-INSERT INTO questionnaires 
-(serialNumber, schoolName, supervisorName, dateCollection, age, stayWith, guardianOccupation, religion, familySize)
-VALUES 
-('Q-001', 'Sample School', 'John Doe', '2024-05-13', 17, 'Father and mother', 'Employed by someone', 'Protestant', 5);
+INSERT INTO responses
+(questionnairesno, schoolname, supervisorfname, collectiondate, age, staywith, guardianoccupation, religion, familysize)
+VALUES
+('KEMRI-SAMPLE-001', 'Sample School', 'John Doe', '2024-05-13', 17, 'Father and mother', 'Employed by someone', 'Protestant', 5);

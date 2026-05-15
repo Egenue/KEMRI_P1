@@ -1,4 +1,4 @@
-export default function FormActions({ loading, message, messageType, handleSubmit, handleClear }) {
+export default function FormActions({ loading, message, messageType, handleClear }) {
   return (
     <div className="form-actions">
       {message && (
@@ -19,7 +19,6 @@ export default function FormActions({ loading, message, messageType, handleSubmi
           type="submit"
           className="btn btn-primary"
           disabled={loading}
-          onClick={handleSubmit}
         >
           {loading ? 'Submitting...' : 'Submit Questionnaire'}
         </button>

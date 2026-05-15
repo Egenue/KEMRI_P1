@@ -7,7 +7,12 @@ import FormActions from '../Components/FormActions';
 import './form.css';
 
 export default function Form() {
-  // Generate unique serial number format: KEMRI-YYYYMMDD-XXXXXX-YYYY
+  const defaultApiUrl = import.meta.env.DEV
+    ? 'http://localhost:5000/api'
+    : 'https://kemri-p1.onrender.com/api';
+  const API_BASE_URL = (import.meta.env.VITE_API_URL || defaultApiUrl).replace(/\/$/, '');
+  const API_URL = `${API_BASE_URL}/questionnaire`;
+  
   const generateSerialNumber = () => {
     const date = new Date();
     const year = date.getFullYear();
@@ -19,22 +24,39 @@ export default function Form() {
   };
 
   const initialState = {
-    questionnaire_sno: '', school_name: '', supervisor_fname: '', collection_date: '', age: '', stay_with: '',
-    guardian_occupation: '', other_guardian_occupation: '', guardian_education: '', religion: '', family_size: '',
-    older_siblings: '', siblings_have_relationships: '', pocket_money: '', pocket_money_adequate: '', financial_support: {},
-    guardian_visits: '', other_visitors:{} , access_rh_info: '', rh_info_source: {}, topics_covered: {}, info_adequate: ''
-  };
+  questionnairesno: '', 
+  schoolname: '', 
+  supervisorfname: '', 
+  collectiondate: '', 
+  age: '', 
+  staywith: '',
+  guardianoccupation: '', 
+  otherguardianoccupation: '', 
+  guardianeducation: '', 
+  religion: '', 
+  familysize: '',
+  oldersiblings: '', 
+  siblingshaverelationships: '', 
+  pocketmoney: '', 
+  pocketmoneyadequate: '', 
+  financialsupport: {}, 
+  guardianvisits: '', 
+  othervisitors: {}, 
+  accessrhinfo: '', 
+  rhinfosource: {}, 
+  topicscovered: {}, 
+  infoadequate: ''
+};
 
   const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
-  // Auto-generate serial number on component mount
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
-      questionnaire_sno: generateSerialNumber()
+      questionnairesno: generateSerialNumber()
     }));
   }, []);
 
@@ -47,19 +69,19 @@ export default function Form() {
     setFormData(prev => ({
       ...prev,
       [section]: {
-        ...prev[section],
-        [option]: !prev[section][option]
+        ...(prev[section] || {}), // Safety: spread existing or empty object
+        [option]: !prev[section]?.[option] // Toggle value safely
       }
     }));
   };
 
   const handleClear = () => {
     if (window.confirm('Are you sure you want to clear all fields?')) {
-      setFormData(prev => ({
+      setFormData({
         ...initialState,
-        questionnaire_sno: generateSerialNumber()
-      }));
-      setMessage('✅ All fields cleared & new serial number generated');
+        questionnairesno: generateSerialNumber()
+      });
+      setMessage('✅ All fields cleared');
       setMessageType('success');
       setTimeout(() => setMessage(''), 3000);
     }
@@ -68,8 +90,8 @@ export default function Form() {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     
-    if (!formData.school_name) {
-      setMessage('⚠️ Please fill in the School Name');
+    if (!formData.schoolname || !formData.age) {
+      setMessage('⚠️ Please fill in all required fields (School Name and Age)');
       setMessageType('warning');
       return;
     }
@@ -77,23 +99,21 @@ export default function Form() {
     setLoading(true);
     setMessage('');
 
-    // Convert checkbox objects { item: true } into "item1, item2" strings for MySQL
-    const stringifyCheckboxes = (obj) => 
-      Object.keys(obj).filter(key => obj[key]).join(', ');
+    const stringifyCheckboxes = (obj) => {
+      if (!obj) return '';
+      return Object.keys(obj).filter(key => obj[key]).join(', ');
+    };
 
     const payload = {
       ...formData,
-      financial_support: stringifyCheckboxes(formData.financial_support),
-      other_visitors: stringifyCheckboxes(formData.other_visitors),
-      rh_info_source: stringifyCheckboxes(formData.rh_info_source),
-      topics_covered: stringifyCheckboxes(formData.topics_covered)
+      financialsupport: stringifyCheckboxes(formData.financialsupport),
+      othervisitors: stringifyCheckboxes(formData.othervisitors),
+      rhinfosource: stringifyCheckboxes(formData.rhinfosource),
+      topicscovered: stringifyCheckboxes(formData.topicscovered)
     };
 
     try {
-
-      /* Change url before deployment */
-
-      const response = await fetch('http://localhost:5000/api/questionnaire', { 
+      const response = await fetch(API_URL, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -102,18 +122,19 @@ export default function Form() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(`✅ ${data.message} (ID: ${data.id})`);
+        const savedId = data.questionnairesno || data.id || formData.questionnairesno;
+        setMessage(`✅ Success! Data saved ID: ${savedId}`);
         setMessageType('success');
-        setTimeout(() => setFormData(prev => ({
-          ...initialState,
-          questionnaire_sno: generateSerialNumber()
-        })), 1500);
+        setTimeout(() => {
+          setFormData({ ...initialState, questionnairesno: generateSerialNumber() });
+          setMessage('');
+        }, 2000);
       } else {
-        setMessage(`❌ ${data.message}`);
+        setMessage(`❌ Error: ${data.message}`);
         setMessageType('error');
       }
     } catch (error) {
-      setMessage(`❌ Connection Error. Is the backend running?`);
+      setMessage(`❌ Network Error. Is the backend running?`);
       setMessageType('error');
     } finally {
       setLoading(false);
@@ -124,29 +145,22 @@ export default function Form() {
     <div className="questionnaire-container">
       <InstructionsSection />
       <form className="form_data" onSubmit={handleSubmit}>
-        <FormHeader 
-          formData={formData} 
-          handleInputChange={handleInputChange} 
-        />
-        
+        <FormHeader formData={formData} handleInputChange={handleInputChange} />
         <DemographicSection 
           formData={formData} 
           handleInputChange={handleInputChange} 
           handleCheckboxChange={handleCheckboxChange}
         />
-        
         <InformationSection 
           formData={formData} 
           handleInputChange={handleInputChange} 
           handleCheckboxChange={handleCheckboxChange}
         />
-
         <FormActions 
           loading={loading}
           message={message}
           messageType={messageType}
           handleClear={handleClear}
-          handleSubmit={handleSubmit}
         />
       </form>
     </div>
