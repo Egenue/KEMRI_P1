@@ -5,7 +5,9 @@ const Questionnaire = {
     create: (data, callback) => {
         const query = `
             INSERT INTO responses 
-            (questionnairesno,
+            (
+            
+            questionnairesno,
             schoolname,
             supervisorfname,
             collectiondate,

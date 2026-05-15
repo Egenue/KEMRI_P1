@@ -3,6 +3,45 @@ import Questionnaire from '../Models/questionnaireModel.js';
 export const submitForm = (req, res) => {
     const { questionnairesno, age } = req.body;
 
+    const {oldersiblings, siblingshaverelationships, pocketmoney,
+            pocketmoneyadequate, guardianvisits, accessrhinfo, infoadequate} = req.body;
+
+    if (oldersiblings === 'Yes') {
+        oldersiblings = true;
+    }else {
+        oldersiblings = false;
+    }
+    if (siblingshaverelationships === 'Yes') {
+        siblingshaverelationships = true;
+    }else {
+        siblingshaverelationships = false;
+    }
+    if (pocketmoney === 'Yes') {
+        pocketmoney = true;
+    }else {
+        pocketmoney = false;
+    }
+    if (pocketmoneyadequate === 'Yes') {
+        pocketmoneyadequate = true;
+    }else {
+        pocketmoneyadequate = false;
+    }
+    if (guardianvisits === 'Yes') {
+        guardianvisits = true;
+    }else {
+        guardianvisits = false;
+    }
+    if (accessrhinfo === 'Yes') {
+        accessrhinfo = true;
+    }else {
+        accessrhinfo = false;
+    }
+    if (infoadequate === 'Yes') {
+        infoadequate = true;
+    }else {
+        infoadequate = false;
+    }
+
     if (!questionnairesno) {
         return res.status(400).json({ success: false, message: 'Questionnaire Serial Number (questionnairesno) is required' });
     }
