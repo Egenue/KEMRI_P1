@@ -58,8 +58,8 @@ export default function DemographicSection({ formData, handleInputChange, handle
           <label>Other (please specify): </label>
           <input
             type="text"
-            name="guardianoccupationother" 
-            value={formData.guardianoccupationother || ''}
+            name="otherguardianoccupation" 
+            value={formData.otherguardianoccupation || ''}
             onChange={handleInputChange}
             placeholder="Please specify if other"
           />

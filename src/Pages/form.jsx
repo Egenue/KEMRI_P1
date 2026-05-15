@@ -7,8 +7,11 @@ import FormActions from '../Components/FormActions';
 import './form.css';
 
 export default function Form() {
-  // Use Vite environment variable with a local fallback to avoid "undefined" URL
-  const API_URL = "https://kemri-p1.onrender.com/api/questionnaire";
+  const defaultApiUrl = import.meta.env.DEV
+    ? 'http://localhost:5000/api'
+    : 'https://kemri-p1.onrender.com/api';
+  const API_BASE_URL = (import.meta.env.VITE_API_URL || defaultApiUrl).replace(/\/$/, '');
+  const API_URL = `${API_BASE_URL}/questionnaire`;
   
   const generateSerialNumber = () => {
     const date = new Date();
@@ -119,7 +122,8 @@ export default function Form() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(`✅ Success! Data saved ID: ${data.id}`);
+        const savedId = data.questionnairesno || data.id || formData.questionnairesno;
+        setMessage(`✅ Success! Data saved ID: ${savedId}`);
         setMessageType('success');
         setTimeout(() => {
           setFormData({ ...initialState, questionnairesno: generateSerialNumber() });
@@ -157,7 +161,6 @@ export default function Form() {
           message={message}
           messageType={messageType}
           handleClear={handleClear}
-          handleSubmit={handleSubmit}
         />
       </form>
     </div>

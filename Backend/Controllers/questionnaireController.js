@@ -1,66 +1,55 @@
 import Questionnaire from '../Models/questionnaireModel.js';
 
+const yesNoFields = [
+    'oldersiblings',
+    'siblingshaverelationships',
+    'pocketmoney',
+    'pocketmoneyadequate',
+    'guardianvisits',
+    'accessrhinfo',
+    'infoadequate'
+];
+
+const normalizeYesNo = (value) => {
+    if (value === 'Yes') return true;
+    if (value === 'No') return false;
+    return null;
+};
+
 export const submitForm = (req, res) => {
     const { questionnairesno, age } = req.body;
-
-    const {oldersiblings, siblingshaverelationships, pocketmoney,
-            pocketmoneyadequate, guardianvisits, accessrhinfo, infoadequate} = req.body;
-
-    if (oldersiblings === 'Yes') {
-        oldersiblings = true;
-    }else {
-        oldersiblings = false;
-    }
-    if (siblingshaverelationships === 'Yes') {
-        siblingshaverelationships = true;
-    }else {
-        siblingshaverelationships = false;
-    }
-    if (pocketmoney === 'Yes') {
-        pocketmoney = true;
-    }else {
-        pocketmoney = false;
-    }
-    if (pocketmoneyadequate === 'Yes') {
-        pocketmoneyadequate = true;
-    }else {
-        pocketmoneyadequate = false;
-    }
-    if (guardianvisits === 'Yes') {
-        guardianvisits = true;
-    }else {
-        guardianvisits = false;
-    }
-    if (accessrhinfo === 'Yes') {
-        accessrhinfo = true;
-    }else {
-        accessrhinfo = false;
-    }
-    if (infoadequate === 'Yes') {
-        infoadequate = true;
-    }else {
-        infoadequate = false;
-    }
 
     if (!questionnairesno) {
         return res.status(400).json({ success: false, message: 'Questionnaire Serial Number (questionnairesno) is required' });
     }
 
-    if (isNaN(age) || age < 15 || age > 19) {
+    const parsedAge = Number(age);
+
+    if (!Number.isInteger(parsedAge) || parsedAge < 15 || parsedAge > 19) {
         return res.status(400).json({ success: false, message: 'Age must be between 15 and 19' });
     }
 
-    Questionnaire.create(req.body, (err, results) => {
+    const normalizedBody = {
+        ...req.body,
+        age: parsedAge
+    };
+
+    yesNoFields.forEach((field) => {
+        normalizedBody[field] = normalizeYesNo(req.body[field]);
+    });
+
+    Questionnaire.create(normalizedBody, (err, results) => {
         if (err) {
             if (err.code === 'ER_DUP_ENTRY') {
                 return res.status(409).json({ success: false, message: 'This Serial Number already exists' });
             }
-            return res.status(500).json({ success: false, error: err.message });
+            return res.status(500).json({ success: false, message: 'Failed to save response', error: err.message });
         } else {
             res.status(201).json({ 
                 success: true, 
                 message: 'Response saved successfully', 
-                questionnairesno: req.body.questionnairesno 
+                id: normalizedBody.questionnairesno,
+                questionnairesno: normalizedBody.questionnairesno
             });
         }
     });

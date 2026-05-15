@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --fix",
-    "dev:all": "concurrently \"vite\" \"nodemon ../Backend/server.js\"",
+    "dev:all": "concurrently \"vite\" \"npm --prefix Backend start\"",
     "preview": "vite preview"
   },
   "dependencies": {
