@@ -117,6 +117,12 @@ def start_web_server():
         export_questionnaire_data()
         return {'status': 'export completed'}, 200
 
+
+    @app.route('/get-report')
+    def download_file():
+        path = "KEMRI_Questionnaire_Export.xlsx"
+        return send_file(path, as_attachment=True)
+
     @app.route('/download', methods=['GET'])
     def download():
         """Download the exported Excel file."""
