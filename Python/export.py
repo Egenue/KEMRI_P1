@@ -10,7 +10,6 @@ import atexit
 from flask import Flask
 from threading import Thread
 
-# 1. Load environment variables
 dotenv.load_dotenv()
 
 EXPORT_FILE = "KEMRI_Questionnaire_Export.xlsx"
@@ -49,11 +48,9 @@ def export_questionnaire_data():
     connection_string = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     
     try:
-        # Create Database Engine
         engine = create_engine(connection_string)
 
-        # Fetch all records from responses table
-        query = "SELECT * FROM responses ORDER BY id DESC"
+        query = "SELECT * FROM responses ORDER BY questionnairesno DESC"
 
         print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Fetching data from MySQL...")
         df = pd.read_sql(query, engine)
@@ -62,22 +59,18 @@ def export_questionnaire_data():
             print("No records found in database.")
             return
 
-        # Data Cleaning - Convert 1/0 to Yes/No for better readability
         if 'older_siblings' in df.columns:
             df['older_siblings'] = df['older_siblings'].map({1: 'Yes', 0: 'No'})
 
-        # Export to Excel
         df.to_excel(EXPORT_FILE, index=False, engine='openpyxl')
-        
-        # Save the export timestamp
         save_export_time()
 
-        print(f"✅ Success! Data exported to {EXPORT_FILE}")
-        print(f"📊 Total records exported: {len(df)}")
-        print(f"⏰ Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"Success! Data exported to {EXPORT_FILE}")
+        print(f"Total records exported: {len(df)}")
+        print(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     except Exception as e:
-        print(f"❌ Error during export: {str(e)}")
+        print(f"Error during export: {str(e)}")
 
 def scheduled_export():
     """Wrapper for scheduled exports with logging."""
@@ -90,12 +83,11 @@ def start_scheduler():
     """Start the APScheduler to run export once daily."""
     scheduler = BackgroundScheduler()
     
-    # Schedule the job to run every day at a specific time (e.g., 2:00 AM UTC)
-    # Adjust the hour parameter based on your timezone preference
+    
     scheduler.add_job(
         func=scheduled_export,
         trigger="cron",
-        hour=2,  # Run at 2:00 AM UTC daily
+        hour=2,
         minute=0,
         id='daily_export',
         name='Daily Questionnaire Export',
@@ -106,7 +98,6 @@ def start_scheduler():
     print(f"✓ Scheduler started. Export will run daily at 02:00 UTC")
     print(f"✓ Current time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
-    # Shut down the scheduler when the app exits
     atexit.register(lambda: scheduler.shutdown())
     
     return scheduler
@@ -129,22 +120,18 @@ def start_web_server():
     app.run(host='0.0.0.0', port=port, debug=False)
 
 if __name__ == "__main__":
-    # Run initial export
     print("Starting KEMRI Data Export Service...")
     export_questionnaire_data()
     
-    # Start the scheduler for daily updates
     scheduler = start_scheduler()
     
-    # Start web server in a separate thread
     web_thread = Thread(target=start_web_server, daemon=True)
     web_thread.start()
     print("✓ Web server started")
     
-    # Keep the process running
     try:
         while True:
-            time.sleep(60)  # Check every minute (minimal overhead)
+            time.sleep(600) 
     except KeyboardInterrupt:
         print("\n✓ Scheduler stopped by user")
         scheduler.shutdown()
