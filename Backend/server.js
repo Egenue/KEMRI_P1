@@ -7,10 +7,16 @@ dotenv.config({ path: './.env' });
 const app = express();
 
 const corsOptions = {
-    origin: ['http://localhost:5174', 'https://kemri-p1.vercel.app/', 'http://localhost:3000', 'http://localhost:5000'], 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: [
+        'http://localhost:5173', 
+        'http://localhost:5174', 
+        'http://localhost:5175',
+        'https://kemri-p1.vercel.app' 
+    ], 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    credentials: true,
+    optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
