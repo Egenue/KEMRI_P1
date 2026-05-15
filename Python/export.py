@@ -7,6 +7,8 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 import time
 import atexit
+from flask import Flask
+from threading import Thread
 
 # 1. Load environment variables
 dotenv.load_dotenv()
@@ -109,6 +111,23 @@ def start_scheduler():
     
     return scheduler
 
+def start_web_server():
+    """Start a simple Flask web server to keep the app running on Render."""
+    app = Flask(__name__)
+    
+    @app.route('/')
+    def health():
+        return {'status': 'running', 'service': 'KEMRI Data Export'}, 200
+    
+    @app.route('/export', methods=['POST'])
+    def trigger_export():
+        """Manual endpoint to trigger export."""
+        export_questionnaire_data()
+        return {'status': 'export completed'}, 200
+    
+    port = int(os.getenv('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
+
 if __name__ == "__main__":
     # Run initial export
     print("Starting KEMRI Data Export Service...")
@@ -116,6 +135,11 @@ if __name__ == "__main__":
     
     # Start the scheduler for daily updates
     scheduler = start_scheduler()
+    
+    # Start web server in a separate thread
+    web_thread = Thread(target=start_web_server, daemon=True)
+    web_thread.start()
+    print("✓ Web server started")
     
     # Keep the process running
     try:
