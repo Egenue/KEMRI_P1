@@ -68,7 +68,7 @@ function AdminLogin({ onLoginSuccess }) {
       }
 
       // Redirect to dashboard
-      navigate('/dashboard');
+      navigate('/admin/dashboard');
 
     } catch (err) {
       setError(err.message || 'An unexpected error occurred');
