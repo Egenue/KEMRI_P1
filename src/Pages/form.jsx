@@ -7,9 +7,7 @@ import FormActions from '../Components/FormActions';
 import './form.css';
 
 export default function Form() {
-  const defaultApiUrl = import.meta.env.DEV
-    ? 'http://localhost:5000/api'
-    : 'https://kemri-p1.onrender.com/api';
+  const defaultApiUrl = import.meta.env.DEV ? 'https://kemri-p1.onrender.com/api' : undefined;
   const API_BASE_URL = (import.meta.env.VITE_API_URL || defaultApiUrl).replace(/\/$/, '');
   const API_URL = `${API_BASE_URL}/questionnaire`;
   

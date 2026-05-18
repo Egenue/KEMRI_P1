@@ -1,10 +1,22 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import * as QuestionnaireController from './Controllers/questionnaireController.js';
+import adminLogonRoutes from './routes/adminLogon.js';
+
+// Use CommonJS for routes since they use require/module.exports
+// import { createRequire } from 'module';
+// const require = createRequire(import.meta.url);
 
 dotenv.config({ path: './.env' });
 const app = express();
+
+// MongoDB Connection
+const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/kemri_admin';
+mongoose.connect(mongoUri)
+    .then(() => console.log('✅ Connected to MongoDB'))
+    .catch(err => console.error('❌ MongoDB connection error:', err.message));
 
 const defaultOrigins = [
     'http://localhost:5173',
@@ -52,6 +64,7 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ success: true, message: 'API is running' });
 });
 
+app.use('/adminLogon', adminLogonRoutes);
 app.post('/api/questionnaire', QuestionnaireController.submitForm);
 app.get('/api/questionnaires', QuestionnaireController.getAllForms);
 app.get('/api/questionnaire/:id', QuestionnaireController.getOneForm);
