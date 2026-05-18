@@ -21,7 +21,7 @@ function AdminLogin({ onLoginSuccess }) {
 
       const response = await fetch(
         import.meta.env.DEV ? 'http://localhost:5000/adminLogon/login'
-        : 'https://kemri-p1.vercel.app/adminLogon/login',
+        : 'https://kemri-p1.onrender.com/adminLogon/login',
         {
           method: 'POST',
           headers: {
