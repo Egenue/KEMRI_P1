@@ -12,7 +12,7 @@ function AdminDashboard({ admin, onLogout }) {
   const [totalRecords, setTotalRecords] = useState(0);
 
   const API_URL = import.meta.env.VITE_API_URL 
-    ? `${import.meta.env.VITE_API_URL}/questionnaires`.replace(/\/+$/, '')
+    ? `${import.meta.env.VITE_API_URL}/api/questionnaires`.replace(/\/+$/, '')
     : 'https://kemri-p1.onrender.com/api/questionnaires';
 
   // Authentication check - verify token exists
