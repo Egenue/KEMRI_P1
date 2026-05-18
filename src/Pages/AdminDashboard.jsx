@@ -7,36 +7,244 @@ function AdminDashboard({ admin, onLogout }) {
   const [error, setError] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
   const [stats, setStats] = useState({ total: 0, pending: 0, completed: 0 });
+  const [downloadLoading, setDownloadLoading] = useState(false);
 
   const defaultApiUrl = import.meta.env.DEV ? 'https://kemri-p1.onrender.com/api' : undefined ;
-  const API_BASE_URL = (import.meta.env.VITE_API_URL || defaultApiUrl).replace(/\/$/, '');
-  const API_URL = `${API_BASE_URL}/questionnaire`;
+  const API_BASE_URL = (`${defaultApiUrl}/questionnaires`).replace(/\/$/, '');
+  const API_URL = `${API_BASE_URL}`;
 
   useEffect(() => {
     fetchQuestionnaires();
   }, []);
 
   const fetchQuestionnaires = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_URL}`);
-      if (!response.ok) throw new Error('Failed to fetch questionnaires');
-      
-      const data = await response.json();
-      setQuestionnaires(data);
-      
-      // Calculate stats
-      setStats({
-        total: data.length,
-        pending: data.filter(q => q.status === 'pending').length,
-        completed: data.filter(q => q.status === 'completed').length,
-      });
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  try {
+
+    setLoading(true);
+
+    const response = await fetch(API_URL);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch questionnaires');
     }
-  };
+
+    const data = await response.json();
+
+    console.log(data);
+
+    // Ensure array
+    const questionnairesArray = Array.isArray(data)
+      ? data
+      : data.data || [];
+
+    setQuestionnaires(questionnairesArray);
+
+    setStats({
+      total: questionnairesArray.length,
+      pending: questionnairesArray.filter(
+        q => q.status === 'pending'
+      ).length,
+      completed: questionnairesArray.filter(
+        q => q.status === 'completed'
+      ).length,
+    });
+
+  } catch (err) {
+
+    setError(err.message);
+
+  } finally {
+
+    setLoading(false);
+
+  }
+};
+
+// Convert data to CSV format
+const convertToCSV = (data) => {
+  if (!Array.isArray(data)) {
+    data = [data];
+  }
+
+  if (data.length === 0) return '';
+
+  // Get all unique keys
+  const keys = [...new Set(data.flatMap(Object.keys))];
+  
+  // Filter out internal fields
+  const filteredKeys = keys.filter(k => !['_id', '__v'].includes(k));
+  
+  // Create header row
+  const header = filteredKeys.join(',');
+  
+  // Create data rows
+  const rows = data.map(item =>
+    filteredKeys.map(key => {
+      const value = item[key];
+      let stringValue = '';
+      
+      if (value === null || value === undefined) {
+        stringValue = '';
+      } else if (typeof value === 'object') {
+        stringValue = JSON.stringify(value);
+      } else {
+        stringValue = String(value);
+      }
+      
+      // Escape quotes and wrap in quotes if contains comma
+      stringValue = stringValue.replace(/"/g, '""');
+      if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
+        stringValue = `"${stringValue}"`;
+      }
+      
+      return stringValue;
+    }).join(',')
+  );
+  
+  return [header, ...rows].join('\n');
+};
+
+// Download handler for CSV
+const handleDownloadCSV = async (type = 'selected') => {
+  try {
+    setDownloadLoading(true);
+    
+    const dataToExport = type === 'selected' && selectedItem 
+      ? [selectedItem] 
+      : questionnaires;
+
+    if (dataToExport.length === 0) {
+      setError('No data to download');
+      return;
+    }
+
+    const csv = convertToCSV(dataToExport);
+    
+    if (!csv) {
+      setError('Could not generate CSV');
+      return;
+    }
+
+    // Create blob and download
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `questionnaires-${type}-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    setError(''); // Clear any previous errors
+  } catch (err) {
+    setError(`Download failed: ${err.message}`);
+  } finally {
+    setDownloadLoading(false);
+  }
+};
+
+// Download handler for JSON
+const handleDownloadJSON = async (type = 'selected') => {
+  try {
+    setDownloadLoading(true);
+    
+    const dataToExport = type === 'selected' && selectedItem 
+      ? [selectedItem] 
+      : questionnaires;
+
+    if (dataToExport.length === 0) {
+      setError('No data to download');
+      return;
+    }
+
+    const json = JSON.stringify(dataToExport, null, 2);
+    
+    // Create blob and download
+    const blob = new Blob([json], { type: 'application/json;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `questionnaires-${type}-${new Date().toISOString().split('T')[0]}.json`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    setError(''); // Clear any previous errors
+  } catch (err) {
+    setError(`Download failed: ${err.message}`);
+  } finally {
+    setDownloadLoading(false);
+  }
+};
+
+// Download menu component
+const DownloadMenu = ({ disabled }) => {
+  const [showMenu, setShowMenu] = useState(false);
+
+  return (
+    <div className="download-menu-container">
+      <button 
+        onClick={() => setShowMenu(!showMenu)}
+        className="download-btn"
+        disabled={disabled || downloadLoading}
+        title={questionnaires.length === 0 ? "No data to download" : ""}
+      >
+        {downloadLoading ? '⏳ Downloading...' : '📥 Download'}
+      </button>
+      
+      {showMenu && (
+        <div className="download-menu">
+          <div className="menu-section">
+            <div className="menu-label">All Questionnaires</div>
+            <button 
+              onClick={() => { handleDownloadCSV('all'); setShowMenu(false); }}
+              className="menu-item"
+              disabled={downloadLoading}
+            >
+              CSV Format
+            </button>
+            <button 
+              onClick={() => { handleDownloadJSON('all'); setShowMenu(false); }}
+              className="menu-item"
+              disabled={downloadLoading}
+            >
+              JSON Format
+            </button>
+          </div>
+          
+          {selectedItem && (
+            <>
+              <div className="menu-divider"></div>
+              <div className="menu-section">
+                <div className="menu-label">Selected Response</div>
+                <button 
+                  onClick={() => { handleDownloadCSV('selected'); setShowMenu(false); }}
+                  className="menu-item"
+                  disabled={downloadLoading}
+                >
+                  CSV Format
+                </button>
+                <button 
+                  onClick={() => { handleDownloadJSON('selected'); setShowMenu(false); }}
+                  className="menu-item"
+                  disabled={downloadLoading}
+                >
+                  JSON Format
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this questionnaire?')) return;
@@ -100,6 +308,7 @@ function AdminDashboard({ admin, onLogout }) {
               <button onClick={fetchQuestionnaires} className="refresh-btn">
                 🔄 Refresh
               </button>
+              <DownloadMenu disabled={questionnaires.length === 0} />
             </div>
 
             {loading ? (

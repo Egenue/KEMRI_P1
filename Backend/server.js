@@ -13,7 +13,7 @@ dotenv.config({ path: './.env' });
 const app = express();
 
 // MongoDB Connection
-const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/kemri_admin';
+const mongoUri = `mongodb+srv://${process.env.MONGO_USER}:${encodeURIComponent(process.env.MONGO_PASSWORD)}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 mongoose.connect(mongoUri)
     .then(() => console.log('✅ Connected to MongoDB'))
     .catch(err => console.error('❌ MongoDB connection error:', err.message));
@@ -65,11 +65,11 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/adminLogon', adminLogonRoutes);
-app.post('/api/questionnaire', QuestionnaireController.submitForm);
+app.post('/api/questionnaires', QuestionnaireController.submitForm);
 app.get('/api/questionnaires', QuestionnaireController.getAllForms);
-app.get('/api/questionnaire/:id', QuestionnaireController.getOneForm);
-app.put('/api/questionnaire/:id', QuestionnaireController.updateForm);
-app.delete('/api/questionnaire/:id', QuestionnaireController.deleteForm);
+app.get('/api/questionnaires/:id', QuestionnaireController.getOneForm);
+app.put('/api/questionnaires/:id', QuestionnaireController.updateForm);
+app.delete('/api/questionnaires/:id', QuestionnaireController.deleteForm);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server on port ${PORT}`));
