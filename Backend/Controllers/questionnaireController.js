@@ -56,10 +56,14 @@ export const submitForm = (req, res) => {
 };
 
 export const getAllForms = (req, res) => {
-    const limit = parseInt(req.query.limit) || 10;
-    const offset = (parseInt(req.query.page) - 1) * limit || 0;
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 100;
+    
+    const page = req.query.page ? parseInt(req.query.page, 10) : 1;
+    const offset = isNaN(page) || page < 1 ? 0 : (page - 1) * limit;
 
-    Questionnaire.getAll(limit, offset, (err, results) => {
+    const finalLimit = isNaN(limit) ? 100 : limit;
+
+    Questionnaire.getAll(finalLimit, offset, (err, results) => {
         if (err) {
             return res.status(500).json({ success: false, error: err.message });
         } else {
