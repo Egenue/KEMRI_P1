@@ -9,7 +9,7 @@ import './form.css';
 export default function Form() {
   const defaultApiUrl = import.meta.env.DEV ? 'https://kemri-p1.onrender.com/api' : undefined;
   const API_BASE_URL = (import.meta.env.VITE_API_URL || defaultApiUrl).replace(/\/$/, '');
-  const API_URL = `${API_BASE_URL}/api/questionnaire`;
+  const API_URL = `${API_BASE_URL}/api/questionnaires`;
   
   const generateSerialNumber = () => {
     const date = new Date();
