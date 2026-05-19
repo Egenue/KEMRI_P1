@@ -1,7 +1,12 @@
-export default function DemographicSection({ formData, handleInputChange, handleCheckboxChange }) {
+import React from 'react';
+import { useOutletContext } from 'react-router-dom';
+
+export default function DemographicSection() {
+  const { formData, handleInputChange, handleCheckboxChange } = useOutletContext();
+
   return (
     <section className="demographic-section">
-      <h2>SOCIO-ECONOMIC & DEMOGRAPHIC DATA</h2>
+      <h2>SECTION B: SOCIO-ECONOMIC & DEMOGRAPHIC DATA</h2>
       
       {/* Q1 */}
       <div className="form-group">
@@ -24,13 +29,13 @@ export default function DemographicSection({ formData, handleInputChange, handle
             <div key={option} className="radio-option">
               <input 
                 type="radio" 
-                id={option} 
+                id={`stay-${option}`} 
                 name="staywith" 
                 value={option}
                 checked={formData.staywith === option}
                 onChange={handleInputChange}
               />
-              <label htmlFor={option}>{option}</label>
+              <label htmlFor={`stay-${option}`}>{option}</label>
             </div>
           ))}
         </div>
@@ -54,7 +59,7 @@ export default function DemographicSection({ formData, handleInputChange, handle
             </div>
           ))}
         </div>
-        <div className="form-group nested">
+        <div className="form-group" style={{ marginTop: '10px' }}>
           <label>Other (please specify): </label>
           <input
             type="text"
@@ -115,6 +120,7 @@ export default function DemographicSection({ formData, handleInputChange, handle
           value={formData.familysize}
           onChange={handleInputChange}
           min={1}
+          max={50}
         />
       </div>
 
@@ -209,8 +215,7 @@ export default function DemographicSection({ formData, handleInputChange, handle
               <input 
                 type="checkbox" 
                 id={`financial-${option}`}
-                value={option || false}
-                checked={formData.financialsupport[option] || false}
+                checked={!!formData.financialsupport?.[option]}
                 onChange={() => handleCheckboxChange('financialsupport', option)}
               />
               <label htmlFor={`financial-${option}`}>{option}</label>
@@ -247,8 +252,7 @@ export default function DemographicSection({ formData, handleInputChange, handle
                   <input 
                     type="checkbox" 
                     id={`visitors-${option}`}
-                    value={option}
-                    checked={formData.othervisitors[option] || false}
+                    checked={!!formData.othervisitors?.[option]}
                     onChange={() => handleCheckboxChange('othervisitors', option)}
                   />
                   <label htmlFor={`visitors-${option}`}>{option}</label>

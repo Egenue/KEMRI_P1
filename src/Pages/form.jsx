@@ -1,27 +1,10 @@
-import { useState, useEffect } from 'react';
-import FormHeader from '../Components/FormHeader';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import InstructionsSection from '../Components/InstructionsSection';
-import DemographicSection from '../Components/DemographicSection';
-import InformationSection from '../Components/InformationSection';
 import FormActions from '../Components/FormActions';
 import './form.css';
 
-export default function Form() {
-  const defaultApiUrl = import.meta.env.DEV ? 'https://kemri-p1.onrender.com/api' : undefined;
-  const API_BASE_URL = (import.meta.env.VITE_API_URL || defaultApiUrl).replace(/\/$/, '');
-  const API_URL = `${API_BASE_URL}/api/questionnaires`;
-  
-  const generateSerialNumber = () => {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const timestamp = Date.now().toString().slice(-6);
-    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-    return `KEMRI-${year}${month}${day}-${timestamp}-${random}`;
-  };
-
-  const initialState = {
+const createInitialState = () => ({
   questionnairesno: '', 
   schoolname: '', 
   supervisorfname: '', 
@@ -44,9 +27,27 @@ export default function Form() {
   rhinfosource: {}, 
   topicscovered: {}, 
   infoadequate: ''
-};
+});
 
-  const [formData, setFormData] = useState(initialState);
+export default function Form() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const defaultApiUrl = import.meta.env.DEV ? 'https://kemri-p1.onrender.com/api' : '';
+  const API_BASE_URL = (import.meta.env.VITE_API_URL || defaultApiUrl).replace(/\/$/, '');
+  const API_URL = `${API_BASE_URL}/api/questionnaires`;
+  
+  const generateSerialNumber = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const timestamp = Date.now().toString().slice(-6);
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return `KEMRI-${year}${month}${day}-${timestamp}-${random}`;
+  };
+
+  const [formData, setFormData] = useState(createInitialState);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
@@ -67,21 +68,21 @@ export default function Form() {
     setFormData(prev => ({
       ...prev,
       [section]: {
-        ...(prev[section] || {}), // Safety: spread existing or empty object
-        [option]: !prev[section]?.[option] // Toggle value safely
+        ...prev[section],
+        [option]: !prev[section][option]
       }
     }));
   };
 
   const handleClear = () => {
     if (window.confirm('Are you sure you want to clear all fields?')) {
-      setFormData({
-        ...initialState,
-        questionnairesno: generateSerialNumber()
-      });
+      const freshState = createInitialState();
+      freshState.questionnairesno = generateSerialNumber();
+      setFormData(freshState);
       setMessage('✅ All fields cleared');
       setMessageType('success');
       setTimeout(() => setMessage(''), 3000);
+      navigate('header-info'); // Send back to step 1
     }
   };
 
@@ -91,6 +92,7 @@ export default function Form() {
     if (!formData.schoolname || !formData.age) {
       setMessage('⚠️ Please fill in all required fields (School Name and Age)');
       setMessageType('warning');
+      navigate('demographics');
       return;
     }
 
@@ -124,11 +126,14 @@ export default function Form() {
         setMessage(`✅ Success! Data saved ID: ${savedId}`);
         setMessageType('success');
         setTimeout(() => {
-          setFormData({ ...initialState, questionnairesno: generateSerialNumber() });
+          const freshState = createInitialState();
+          freshState.questionnairesno = generateSerialNumber();
+          setFormData(freshState);
           setMessage('');
+          navigate('header-info');
         }, 2000);
       } else {
-        setMessage(`❌ Error: ${data.message}`);
+        setMessage(`❌ Error: ${data.message || 'Server rejected request'}`);
         setMessageType('error');
       }
     } catch (error) {
@@ -139,26 +144,28 @@ export default function Form() {
     }
   };
 
+  // Determine current active step for the bottom actions bar
+  const currentPath = location.pathname;
+  const isFirstStep = currentPath.includes('header-info');
+  const isSecondStep = currentPath.includes('demographics');
+  const isFinalStep = currentPath.includes('information');
+
   return (
     <div className="questionnaire-container">
       <InstructionsSection />
       <form className="form_data" onSubmit={handleSubmit}>
-        <FormHeader formData={formData} handleInputChange={handleInputChange} />
-        <DemographicSection 
-          formData={formData} 
-          handleInputChange={handleInputChange} 
-          handleCheckboxChange={handleCheckboxChange}
-        />
-        <InformationSection 
-          formData={formData} 
-          handleInputChange={handleInputChange} 
-          handleCheckboxChange={handleCheckboxChange}
-        />
+        
+        {/* The active route element renders alone here */}
+        <Outlet context={{ formData, handleInputChange, handleCheckboxChange }} />
+
         <FormActions 
           loading={loading}
           message={message}
           messageType={messageType}
           handleClear={handleClear}
+          isFirstStep={isFirstStep}
+          isSecondStep={isSecondStep}
+          isFinalStep={isFinalStep}
         />
       </form>
     </div>

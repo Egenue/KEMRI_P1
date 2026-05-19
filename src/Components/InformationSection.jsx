@@ -1,7 +1,12 @@
-export default function InformationSection({ formData, handleInputChange, handleCheckboxChange }) {
+import React from 'react';
+import { useOutletContext } from 'react-router-dom';
+
+export default function InformationSection() {
+  const { formData, handleInputChange, handleCheckboxChange } = useOutletContext();
+
   return (
     <section className="information-section">
-      <h2>SOURCES OF INFORMATION & SEXUAL BEHAVIOR</h2>
+      <h2>SECTION C: SOURCES OF INFORMATION & SEXUAL BEHAVIOR</h2>
 
       {/* Q14 */}
       <div className="form-group">
@@ -33,8 +38,7 @@ export default function InformationSection({ formData, handleInputChange, handle
                 <input 
                   type="checkbox" 
                   id={`sources-${option}`}
-                  value={option}
-                  checked={formData.rhinfosource[option] || false}
+                  checked={!!formData.rhinfosource?.[option]}
                   onChange={() => handleCheckboxChange('rhinfosource', option)}
                 />
                 <label htmlFor={`sources-${option}`}>{option}</label>
@@ -54,8 +58,7 @@ export default function InformationSection({ formData, handleInputChange, handle
                 <input 
                   type="checkbox" 
                   id={`topics-${option}`}
-                  value={option}
-                  checked={formData.topicscovered[option] || false}
+                  checked={!!formData.topicscovered?.[option]}
                   onChange={() => handleCheckboxChange('topicscovered', option)}
                 />
                 <label htmlFor={`topics-${option}`}>{option}</label>

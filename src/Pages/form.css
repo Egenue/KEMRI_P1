@@ -14,6 +14,8 @@
   padding: 30px;
   background-color: #f9f9f9;
   border-radius: 8px;
+  justify-content: center;
+  align-items: center;
   box-shadow: -10px -5px 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -26,6 +28,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
   line-height: 1.6;
+  filter: hue-rotate(900deg);
 }
 
 /* Header Section */
@@ -139,7 +142,7 @@ section h2 {
   transition: border-color 0.3s;
 }
 
-.form-group input[type="text"]:focus,
+.form-group input[type="text"]:focus ,
 .form-group input[type="date"]:focus,
 .form-group input[type="number"]:focus {
   margin-left: 10px ;

@@ -1,7 +1,13 @@
-export default function FormHeader({ formData, handleInputChange }) {
+import React from 'react';
+import { useOutletContext } from 'react-router-dom';
+
+export default function FormHeader() {
+  const { formData, handleInputChange } = useOutletContext();
+
   return (
     <div className="form-header">
       <h1>QUESTIONNAIRE FOR THE GIRLS AGED BETWEEN 15-19 YEARS</h1>
+      <h2>SECTION A: GENERAL METADATA</h2>
       
       <div className="header-fields">
         <div className="form-group">
