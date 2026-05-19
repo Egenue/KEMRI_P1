@@ -11,7 +11,7 @@ export default function FormActions({ loading, message, messageType, handleClear
           {message}
         </div>
       )}
-      <div className="button-group" style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+      <div className="button-group" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', transition: 'background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease'}}>
         
         {/* Left Side: Clear or Back buttons */}
         <div>

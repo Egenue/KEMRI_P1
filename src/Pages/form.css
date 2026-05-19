@@ -252,6 +252,18 @@ section h2 {
 .form-actions button[type="submit"]:hover {
   background-color: #1e3a5f;
   box-shadow: 0 4px 12px rgba(44, 82, 130, 0.4);
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.form-actions button[type="button"] {
+  background-color: #e2e8f0;
+  color: #333;
+}
+
+.form-actions button[type="button"]:hover {
+  background-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(44, 82, 130, 0.4);
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
 }
 
 /* Responsive Design */
