@@ -33,9 +33,9 @@ export default function Form() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const defaultApiUrl = import.meta.env.DEV ? 'https://kemri-p1.onrender.com/api' : '';
+  const defaultApiUrl = import.meta.env.DEV ? 'https://kemri-p1.onrender.com/' : '';
   const API_BASE_URL = (import.meta.env.VITE_API_URL || defaultApiUrl).replace(/\/$/, '');
-  const API_URL = `${API_BASE_URL}/api/questionnaires`;
+  const API_URL = `${API_BASE_URL}/questionnaires`;
   
   const generateSerialNumber = () => {
     const date = new Date();
